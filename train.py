@@ -68,6 +68,8 @@ if __name__ == '__main__':
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=0.0001)
+    loss = None
+    acc = None
     for epoch in range(num_epoch):
         for i, (data_batch, label_batch) in enumerate(train_dataloader):
             data_batch = data_batch.cuda()
@@ -77,5 +79,8 @@ if __name__ == '__main__':
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            print("acc:{:.6f}".format(evaluate(net, test_dataloader)))
+            acc = evaluate(net, test_dataloader)
+            print("acc:{:.6f}".format(acc))
+        sw.add_scalar('loss curve', loss, epoch)
+        sw.add_scalar('acc curve', acc, epoch)
     sw.close()
