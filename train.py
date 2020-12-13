@@ -1,6 +1,7 @@
 import torch.autograd
 import torch.nn as nn
 from dataset import Dataset2
+from tensorboardX import SummaryWriter
 
 
 class Network2(nn.Module):
@@ -59,6 +60,9 @@ if __name__ == '__main__':
     )
 
     net = Network2(input_dim=data_vector_dim, output_dim=class_num)
+    ramdom_input = torch.rand(12, data_vector_dim)
+    sw = SummaryWriter(comment='net2')
+    sw.add_graph(net, (ramdom_input,))
     if torch.cuda.is_available():
         net = net.cuda()
 
@@ -74,3 +78,4 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
             print("acc:{:.6f}".format(evaluate(net, test_dataloader)))
+    sw.close()
